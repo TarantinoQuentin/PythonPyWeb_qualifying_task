@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status, permissions, filters, authentication
-from api_educational_courses.models import Course
+from .models import Course
 from .serializers import CourseModelSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin
@@ -37,6 +37,9 @@ class CoursePagination(PageNumberPagination):
     max_page_size = 1000  # максимальное количество объектов на странице
 
 
+
+
+
 class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin,
                            DestroyModelMixin):
     queryset = Course.objects.all()
@@ -45,32 +48,32 @@ class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, C
     # Переопределяем атрибут permission_classes для указания нашего собственного разрешения
     permission_classes = [CustomPermission]
     # authentication_classes = [authentication.TokenAuthentication]
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
 
 
-def get(self, request, *args, **kwargs):
-    if kwargs.get(self.lookup_field):  # если был передан id или pk
-        try:
-            # возвращаем один объект
-            return self.retrieve(request, *args, **kwargs)
-        except Http404:
-            return Response({'message': 'Курс не найден'}, status=status.HTTP_404_NOT_FOUND)
-    else:
-        # Иначе возвращаем список объектов
-        return self.list(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        if kwargs.get(self.lookup_field):  # если был передан id или pk
+            try:
+                # возвращаем один объект
+                return self.retrieve(request, *args, **kwargs)
+            except Http404:
+                return Response({'message': 'Курс не найден'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # Иначе возвращаем список объектов
+            return self.list(request, *args, **kwargs)
 
 
-def post(self, request, *args, **kwargs):
-    return self.create(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-def put(self, request, *args, **kwargs):
-    return self.update(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 
-def patch(self, request, *args, **kwargs):
-    return self.partial_update(request, *args, **kwargs)
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
-def delete(self, request, *args, **kwargs):
-    return self.destroy(request, *args, **kwargs)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
