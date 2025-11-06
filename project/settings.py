@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api_educational_courses',
     'rest_framework',
-    'rest_framework_simplejwt',
     'rest_framework.authtoken',
+    # 'rest_framework_simplejwt',
     'drf_spectacular',
     'django_filters',
 ]
@@ -135,6 +135,7 @@ AUTH_USER_MODEL = 'api_educational_courses.User'
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
        'rest_framework_simplejwt.authentication.JWTAuthentication',
+       'rest_framework.authentication.TokenAuthentication',
    ),
    'DEFAULT_PERMISSION_CLASSES': (
        'rest_framework.permissions.IsAuthenticated',

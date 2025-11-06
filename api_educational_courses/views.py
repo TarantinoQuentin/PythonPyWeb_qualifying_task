@@ -37,9 +37,6 @@ class CoursePagination(PageNumberPagination):
     max_page_size = 1000  # максимальное количество объектов на странице
 
 
-
-
-
 class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin,
                            DestroyModelMixin):
     queryset = Course.objects.all()
@@ -47,9 +44,8 @@ class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, C
 
     # Переопределяем атрибут permission_classes для указания нашего собственного разрешения
     permission_classes = [CustomPermission]
-    # authentication_classes = [authentication.TokenAuthentication]
+    # authentication_classes = [authentication.TokenAuthentication, authentication.BasicAuthentication]
     # authentication_classes = [JWTAuthentication]
-
 
     def get(self, request, *args, **kwargs):
         if kwargs.get(self.lookup_field):  # если был передан id или pk
@@ -62,18 +58,14 @@ class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, C
             # Иначе возвращаем список объектов
             return self.list(request, *args, **kwargs)
 
-
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
