@@ -1,11 +1,12 @@
 from rest_framework.response import Response
-from rest_framework import status, permissions, filters, authentication
+from rest_framework import status, permissions, filters
 from .models import Course
 from .serializers import CourseModelSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 from django.http import Http404
 
 
@@ -44,8 +45,8 @@ class CourseGenericAPIView(GenericAPIView, RetrieveModelMixin, ListModelMixin, C
 
     # Переопределяем атрибут permission_classes для указания нашего собственного разрешения
     permission_classes = [CustomPermission]
-    # authentication_classes = [authentication.TokenAuthentication, authentication.BasicAuthentication]
-    # authentication_classes = [JWTAuthentication]
+    pagination_class = CoursePagination
+    # authentication_classes = [TokenAuthentication, BasicAuthentication, JWTAuthentication]
 
     def get(self, request, *args, **kwargs):
         if kwargs.get(self.lookup_field):  # если был передан id или pk

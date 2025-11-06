@@ -28,7 +28,7 @@ class UserProfile(models.Model):
     name = models.CharField(max_length=40,
                             verbose_name="ФИО студента")
     teacher = models.CharField(max_length=40,
-                               verbose_name="Фио преподавателя")
+                               verbose_name="ФИО преподавателя")
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE,
                                 related_name="user_profile")
