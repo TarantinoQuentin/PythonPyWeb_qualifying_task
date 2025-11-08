@@ -33,6 +33,9 @@ class UserProfile(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name="user_profile")
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
@@ -59,6 +62,9 @@ class Course(models.Model):
     author = models.CharField(max_length=40,
                               verbose_name="Автор курса")
 
+    def __str__(self):
+        return f'{self.name}, автор: {self.author}'
+
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
@@ -82,6 +88,9 @@ class Lesson(models.Model):
     lesson_recording_url = models.URLField(max_length=200,
                                            verbose_name="Ссылка на запись урока")
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
@@ -97,11 +106,13 @@ class Enrollment(models.Model):
                              on_delete=models.CASCADE,
                              related_name="enrollments",
                              verbose_name="Пользователь")
-    course = models.CharField(max_length=30,
-                              unique=True,
-                              verbose_name="Название курса",
-                              help_text="Название курса уникальное. Ограничение 30 знаков")
+    course = models.ManyToManyField('Course', related_name='enrollments')
 
+    def __str__(self):
+        # course_list = []
+        # for value in self.course:
+        #     self.course.name.append(course_list)
+        return f'{self.course.name}, студент: {self.user}'
 
     class Meta:
         verbose_name = "Запись"
@@ -126,10 +137,14 @@ class Review(models.Model):
     text = models.TextField(blank=True,
                             null=True,
                             help_text="Текст отзыва")
-    rate = models.FloatField(null=False,
+    rate = models.IntegerField(null=False,
                              blank=False,
-                             default=0.0,
-                             verbose_name="Оценка")
+                             default=0,
+                             verbose_name="Оценка",
+                             help_text="От 1 до 10")
+
+    def __str__(self):
+        return f'({self.rate:.0f}/10) {self.course}, студент: {self.user}'
 
     class Meta:
         verbose_name = "Отзыв"
@@ -143,11 +158,14 @@ class Category(models.Model):
     course - курсы категории
     """
 
-    name = models.CharField(max_length=15,
+    name = models.CharField(max_length=30,
                             unique=True,
                             verbose_name="Название категории",
                             help_text="Название категории уникальное. Ограничение 15 знаков")
     course = models.ManyToManyField('Course', related_name='categories')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = "Категория"
