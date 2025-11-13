@@ -6,7 +6,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 
-
 class CustomPermission(permissions.BasePermission):
     """
     Пользователи могут выполнять различные действия в зависимости от их роли.
@@ -54,7 +53,7 @@ class CourseViewSet(ModelViewSet):
 
     queryset = Course.objects.all()
     serializer_class = CourseModelSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']
+
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['id', 'name', 'description', 'author']
@@ -79,8 +78,7 @@ class UserProfileViewSet(ModelViewSet):
 
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileModelSerializer
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']
-    permission_classes = [CustomPermission]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['id', 'name', 'teacher', 'user']

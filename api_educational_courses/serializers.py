@@ -52,12 +52,16 @@ class ReviewModelSerializer(serializers.ModelSerializer):
     Удалить, создать, обновить и вернуть новый объект Review на основе предоставленных данных
     """
 
-    rate = serializers.IntegerField(validators=[validators.MinValueValidator(0), validators.MaxValueValidator(10)])
+    rate = serializers.IntegerField()#validators=[validators.MinValueValidator(0), validators.MaxValueValidator(10)])
 
     class Meta:
         model = Review
         fields = '__all__'
         read_only_fields = ['id']
+
+    # def validate(self, attrs):
+    #     print()
+
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):

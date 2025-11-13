@@ -3,8 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from datetime import date, datetime
-
-
+from django.core import validators
 """
 Рассматриваются 7 таблиц условно обобщающих функционал онлайн-курсов
 """
@@ -14,7 +13,8 @@ class User(AbstractUser):
     Таблица 'Пользователь', содержащая в себе
     данные для авторизации
     """
-    pass
+    class Meta(AbstractUser.Meta):
+        swappable = "AUTH_USER_MODEL"
 
 
 class UserProfile(models.Model):
@@ -112,7 +112,7 @@ class Enrollment(models.Model):
         # course_list = []
         # for value in self.course:
         #     self.course.name.append(course_list)
-        return f'{self.course.name}, студент: {self.user}'
+        return f'{",,,".join([course.name for course in self.course.all()])}, студент: {self.user}'
 
     class Meta:
         verbose_name = "Запись"
@@ -138,10 +138,13 @@ class Review(models.Model):
                             null=True,
                             help_text="Текст отзыва")
     rate = models.IntegerField(null=False,
-                             blank=False,
+                               blank=False,
                              default=0,
                              verbose_name="Оценка",
-                             help_text="От 1 до 10")
+                             help_text="От 1 до 10",
+                               validators=[validators.MinValueValidator(0), validators.MaxValueValidator(10)],
+                               error_messages={'blank': 'ПУстые данные', 'required': 'Обязательное поле', 'null':'null', 'invalid':'invalid'})
+
 
     def __str__(self):
         return f'({self.rate:.0f}/10) {self.course}, студент: {self.user}'
